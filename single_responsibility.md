@@ -9,17 +9,17 @@ For example, let's consider a Tic Tac Toe game with a ```Board```
 module:
 
 ```
-defmodule Board do
+class Board
 
-  def generate_blank_board do
+  def generate_blank_board
     #generate a board state
   end
 
-  def display_current_board do
+  def display_current_board
     #displays the board to the ui
   end
 
-  def update_board do
+  def update_board
     #updated the board's state
   end
 end
@@ -67,19 +67,19 @@ So, how do we fix the ```Board``` module above? Instead of including
 code to both **display** a board and **keep it's state**, let's split
 those two pieces into two separate modules:
 ```
-defmodule BoardState do
- def generate_blank_board do
+class BoardState
+  def generate_blank_board
     #generate a board state
   end
 
-  def update_board do
+  def update_board
     #updated the board's state
   end
 end
 ```
 ```
-defmodule BoardPresenter do
-  def display_current_board do
+class BoardPresenter
+  def display_current_board
     #displays the board to the ui
   end
 end
