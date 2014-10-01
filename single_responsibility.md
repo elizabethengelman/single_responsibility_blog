@@ -1,12 +1,25 @@
 Single Responsibility Principle
 ===============================
-The Single Responsibility Principle states that any class, module or
-method should have only one reason to change. Instead of thinking of a
-responsibility with the more traditional definition, we should instead
-consider a responsibility as a *reason for change*.
 
-For example, let's consider a Tic Tac Toe game with a ```Board```
-module:
+What is the Single Responsibility Principle? And why is it important?
+
+The SRP is first of Uncle Bob's SOLID principles, and is perhaps one of
+the most important principles [DIFFERENT WORD FOR PRINCIPLES] to follow when writing good, clean
+software. By adhering to the SOLID principles, we can set ourselves up
+for success, in that we're creating code that is more easily maintaned,
+and extended as our project evolves. In a nutshell, the SRP states that
+each software entity that we create should have one, and only one reason for changing.
+
+Traditionally, we think of a 'responsibility' as a state of dealing with
+or having control over a specific issue. So, we may think of a software
+entity's responsibility, as needing to take care of a very specific
+problem within our system. But, instead, let's change the way we think
+about the word 'responsibility' and instead understand it as a *reason
+for change*. In other words, each software entity should only ever
+present one reason (one piece of its functionality) to change.
+
+In order to have a more in depth understanding of this principle, let's consider a Tic Tac Toe program, written in Ruby, with a ```Board```
+class:
 
 ```
 class Board
@@ -25,9 +38,8 @@ class Board
 end
 ```
 
-At first glance, this module may seem okay; each of the three functions
-is related specifically to a Board. However, if we think about the
-*reasons for change* we may see that both ```generate_blank_board``` and
+Our ```Board``` has methods that generate, display and update the board. At first glance, this class may appear to adhere to the SRP without a problem;
+each of the three methods is specifically related to a Board object. However, let's look a little closer, and start to look at this classes in terms of *reasons for change*. We can see that both ```generate_blank_board``` and
 ```update_board``` are both dealing specifically with the **state** of
 the board itself. While, ```display_current_board``` deals with
 **displaying** the board to the user. So, it is technically violating
