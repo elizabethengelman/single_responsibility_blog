@@ -1,14 +1,11 @@
 Single Responsibility Principle
 ===============================
-
-What is the Single Responsibility Principle? And why is it important?
-
 The SRP is first of Uncle Bob's SOLID principles, and is perhaps one of
 the most important principles [DIFFERENT WORD FOR PRINCIPLES] to follow when writing good, clean
 software. By adhering to the SOLID principles, we can set ourselves up
-for success, in that we're creating code that is more easily maintaned,
+for success, since we're creating code that is more easily maintaned,
 and extended as our project evolves. In a nutshell, the SRP states that
-each software entity that we create should have one, and only one reason for changing.
+each software entity we create should have one, and only one reason for changing.
 
 Traditionally, we think of a 'responsibility' as a state of dealing with
 or having control over a specific issue. So, we may think of a software entity's responsibility,
@@ -26,11 +23,11 @@ class:
 class Board
 
   def generate_blank_board
-    #generate a board state
+    #generates an empty board state
   end
 
-  def display_current_board
-    #displays the board to the ui
+  def display_current_board_in_terminal
+    #displays the board to the terminal
   end
 
   def update_board
@@ -50,7 +47,7 @@ responsibilities, or two *reasons for change*: a board's state (if a
 space is empty, or if it is filled with an X or O), and a board's user
 interface.
 
-Leaving these two separate responsibilities in the ```Board``` module,
+Leaving these two separate responsibilities in the ```Board``` class,
 would essentially be coupling the idea of a ```Board```'s state with
 it's display. If we ever want to change how a board's **state is
 stored** or how a board is **displayed**, we would be dealing with two
@@ -64,11 +61,11 @@ that this one change could break another part of our game system. In
 essence, this is a fragility.
 
 In Practical Object-Oriented Design in Ruby by Sandi Metz, she describes
-one of my favorite software tips: when describing what a class (or any
+one of my favorite tips for writing software: when describing what a class (or any
 other software entity) does in one sentence, if you use the words "and" or "or", you're most
 likely breaking the Single Responsibility Principle. If you use the
-word "and" your class has at least two responsibiliites. If you use the
-word "or" the class likely has more than one responsibility, and there's
+word "and", your class has at least two responsibiliites. If you use the
+word "or", the class likely has more than one responsibility, and there's
 a good chance the two responsibilities aren't related to one another.
 Let's try this out on our ```Board``` class: It keeps track of a Tic Tac
 Toe board's state **and** displays this state to the user. Busted!
@@ -76,30 +73,90 @@ Toe board's state **and** displays this state to the user. Busted!
 We've now determined that our ```Board``` class does in fact
 violate the Single Responsibility Principle, but why do we care?
 
-When we adhere to the Single Responsibility Principle, we're on the road
-to ensuring [DIFFERENT WORD FOR ENSURE] that our code is reusable.
-A benefit of creating code that is reusable is that we're able to reduce
-our code duplication, and as we know, crafting software that is DRY is
-yet another important [DIFFERENT WORD] tenant to follow when creating
-software. By
+In order to answer this question, let's dig back into our Tic Tac Toe
+example. As our Tic Tac Toe game evolves, let's say that we
+decide to extend our program to allow the user to play in a browser, in addition to our initial display in the terminal.
+So, how could we accomplish this? Our first option could be to use the
+same ```Board``` class that we defined above, and to add the new
+functionality to it:
+
+```
+class Board
+
+  def generate_blank_board
+    #generates an empty board state
+  end
+
+  def display_current_board_in_terminal
+    #displays the board on the command line
+  end
+
+  def display_current_board_in_browser
+    #displays the current board in a brower
+  end
+
+  def update_board
+    #updated the board's state
+  end
+end
+```
+
+Now we have a ```Board``` class that does exactly what we need it to... or does it?
+If we look at this code a little deeper, we'll realize that the class
+that may be responsible for rendering the game in the browswer, shouldn't have any need to
+know anything about how the game is displayed in the terminal. But, the
+way that we've currently written ```Board```, the browser displaying
+logic is very tightly coupled with the terminal display logic:
+
+class BrowserGame
+  def play_the_game
+    board = Board.new
+    board.display_current_board_in_browser
+
+    #other game logic
+  end
+end
+
+Everytime we need to make a change to
+```display_current_board_in_terminal``` for example, we will
+be touching the ```Board``` class and thereby risk introducing a bug or some
+sort of unintended side effect. This side effect could then potentially trickle
+down [DIFFERENT word for trickle down] and also effect how the
+```Board``` class behaves in the browser, even though it doesn't ever use
+```display_current_board_in_terminal```!
+
+This is perhaps one of the biggest flaws with reusing a class that
+breaks the Single Responsibility Principle.
+
+Our other option to reuse ```Board``` in its current state
+would be to duplicate it, and make the small change that we need for the
+terminal game (a new display method specifically for the browswer):
+
+```
+class BrowserBoard
+
+  def generate_blank_board
+    #generates an empty board state
+  end
+
+  def display_current_board_in_browser
+    #displays the board to the browser
+  end
+
+  ef update_board
+    #updated the board's state
+  end
+end
+```
+
+This choice is flawed as well. If we ever need to change the way a
+```Board``` is updated, we would need to change the
+```update_board``` method in both ```BrowserBoard``` and
+```TerminalBoard```, which opens us up for double the chance to introduce a
+bug or inconsistency.
 
 
 
-
-
-Another essential tenant involved in creating software that is maintainable
-and extendable is code reusibility. The benefit of creating code that
-
-Another important implication of the Single Responsibility Principle is
-the idea of code reusability. Let's say that we had use for a module
-that was only concerned with *displaying* a game board. In order to use
-```Board``` as it currently is designed, we would also have to include
-all the logic involved in generating and updating the board's state,
-even though this particular application doesn't care about those
-functions. This would include a lot of unused code, and would force our
-new application to retest and redeploy our game system any time there
-was a change to how the ```Board``` state was updated - though that
-isn't even used in this new application.
 
 So, how do we fix the ```Board``` module above? Instead of including
 code to both **display** a board and **keep it's state**, let's split
@@ -144,3 +201,10 @@ IDEAS:
 -describe what the class is doing in one sentence -> 'and' class likely
 has more than one responsibility, 'or' -> the class has more than one
 responsibility and they likely aren't even related
+
+A benefit of creating code that is reusable is that we're able to reduce
+our code duplication, and as we know, crafting software that is DRY is
+yet another important [DIFFERENT WORD] tenant to follow when creating
+software. By creating DRY code, we reduce the need to update FINISH this
+sentence
+
