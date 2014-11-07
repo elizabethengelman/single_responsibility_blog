@@ -43,22 +43,20 @@ terms of *reasons for change*. We can see that both the ```generate_blank_board`
 ```update_board``` methods are dealing specifically with the **state** of
 the board itself. While, ```display_current_board``` deals with
 **displaying** the board to the user. At the moment we have two
-responsibilities, or two *reasons for change*: a board's state (if a
-space is empty, or if it is filled with an X or O), and a board's user
-interface.
+responsibilities, or two *reasons for change*.
 
 Leaving these two separate responsibilities in the ```Board``` class,
-would essentially be coupling the idea of a ```Board```'s state with
+essentially would be coupling the idea of a ```Board```'s state with
 it's display. If we ever want to change how a board's **state is
 stored** or how a board is **displayed**, we would be dealing with two
 very different responsibilities.  Say our requirements change, and now
 instead of displaying our game on the command line, we also want to
-display the it in the browser as well. While creating a browser UI,
+display it in the browser as well. While creating a browser UI,
 there would be a great chance that we could introduce a bug into the
 "state keeping" section of our module. Furthermore, since these two
 responsibilities are coupled into one module, there is also a chance
 that this one change could break another part of our game system. In
-essence, this is a fragility.
+essence, this is fragility.
 
 In Practical Object-Oriented Design in Ruby by Sandi Metz, she describes
 one of my favorite tips for writing software: when describing what a class (or any
@@ -74,7 +72,7 @@ We've now determined that our ```Board``` class does in fact
 violate the Single Responsibility Principle, but why do we care?
 
 In order to answer this question, let's dig back into our Tic Tac Toe
-example. As our Tic Tac Toe game evolves, let's say that we
+example. As we mentioned above, it is quite possible that our Tic Tac Toe game evolves in such a way that we
 decide to extend our program to allow the user to play in a browser, in addition to our initial display in the terminal.
 So, how could we accomplish this? Our first option could be to use the
 same ```Board``` class that we defined above, and to add the new
@@ -92,7 +90,7 @@ class Board
   end
 
   def display_current_board_in_browser
-    #displays the current board in a brower
+    #displays the current board in a browser
   end
 
   def update_board
@@ -102,11 +100,14 @@ end
 ```
 
 Now we have a ```Board``` class that does exactly what we need it to... or does it?
-If we look at this code a little deeper, we'll realize that the class
+If we look at this code a little deeper, we'll realize that this class
 that may be responsible for rendering the game in the browswer, shouldn't have any need to
 know anything about how the game is displayed in the terminal. But, the
 way that we've currently written ```Board```, the browser displaying
-logic is very tightly coupled with the terminal display logic:
+logic is very tightly coupled with the terminal display logic.
+
+Let's look at how a browswer game may utilize the extended ```Board```
+class:
 
 class BrowserGame
   def play_the_game
@@ -117,16 +118,24 @@ class BrowserGame
   end
 end
 
-Everytime we need to make a change to
-```display_current_board_in_terminal``` for example, we will
+And a terminal game may look something like this:
+
+class TerminalGame
+  def play_the_game
+    board = Board.new
+    board.display_current_board_in_terminal
+
+    #other game logic
+  end
+end
+
+Everytime we need to make a change to ```display_current_board_in_terminal```, we'll
 be touching the ```Board``` class and thereby risk introducing a bug or some
-sort of unintended side effect. This side effect could then potentially trickle
-down [DIFFERENT word for trickle down] and also effect how the
+sort of unintended side effect to any entity that uses ```Board```, like ```BrowserGame``` for example. This side effect could potentially trickle down [DIFFERENT word for trickle down] and also effect how the
 ```Board``` class behaves in the browser, even though it doesn't ever use
 ```display_current_board_in_terminal```!
 
-This is perhaps one of the biggest flaws with reusing a class that
-breaks the Single Responsibility Principle.
+This is perhaps one of the biggest flaws in breaking the Single Responsibility Principle.
 
 Our other option to reuse ```Board``` in its current state
 would be to duplicate it, and make the small change that we need for the
