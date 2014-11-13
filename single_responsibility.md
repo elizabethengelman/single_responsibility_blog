@@ -140,7 +140,8 @@ This is a fairly simple change, yet now we have added a great deal of flexibilit
 
 
 Sources:
+
 Practical Object-Oriented Design in Ruby by Sandi Metz
-Agile Software Development, Principles, Patterns, and Practices by
-Robert "Uncle Bob" Martin
+
+Agile Software Development, Principles, Patterns, and Practices by Robert "Uncle Bob" Martin
 
