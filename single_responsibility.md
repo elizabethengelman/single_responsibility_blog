@@ -136,9 +136,8 @@ board_state.update_board
 board_presenter = BoardPresenter.new
 board_presenter.display_current_board(@board_state)
 
-This is a fairly simple change, yet now we have added   a great deal of flexibility to our system in being able to add or change our user interface, without ever needing to touch our primary game logic.  Since we’re encapsulating the game’s display-centric code in our ```BrowserBoardPresenter```, we’re free to make any changes we want to
-the presentation without fear of breaking something else! NEED TO FINISH
-IT OFF
+This is a fairly simple change, yet now we have added a great deal of flexibility to our system in being able to add or change our user interface, without ever needing to touch our primary game logic.  Since we’re encapsulating the game’s display-centric code in our ```BrowserBoardPresenter```, we’re free to make any changes we want to
+the presentation without fear of breaking something else! This flexibility is essential when designing code that is easily maintainable. We have no idea what the future will bring for our software, and by designing code that is in neatly encapsulated into small classes, it become much easier to interpret and change going forward... without fear!
 
 
 Sources:
