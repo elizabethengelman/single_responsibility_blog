@@ -1,6 +1,6 @@
 Single Responsibility Principle
 ===============================
-One of my favorite tips for writing software comes from one of my favorite software role models, Sandi Metz. In her book Practical Object-Oriented Design in Ruby, she says that when describing what a class (or any other software entity) does in one sentence, if you use the words "and" or "or", you're most likely breaking the Single Responsibility Principle. If you use the word "and", your class has at least two responsibilities. If you use the word "or", the class likely has more than one responsibility, and there's a good chance the responsibilities aren't related to one another.  Let's try this out on a ```Board``` class written for a Tic Tac Toe program (in Ruby):
+One of my favorite tips for writing software comes from one of my favorite software role models, Sandi Metz. In her book Practical Object-Oriented Design in Ruby, she says that when describing what a class (or any other software entity) does in one sentence, if you use the words "and" or "or", you're most likely breaking the Single Responsibility Principle. If you use the word "and", your class has at least two responsibilities. If you use the word "or", the class likely has more than one responsibility, and there's a good chance the responsibilities aren't related to one another.  Let's try to desribe this ```Board``` class written for a Tic Tac Toe program (in Ruby):
 
 ```
 class Board
@@ -19,12 +19,12 @@ class Board
 end
 ```
 
-The above class keeps track of the board's state **and** displays this state to the user. It looks like we have a SRP violation! But, now that we've determined we have a violation, why should we care?
+How would we describe this class?  It keeps track of the board's state **and** displays this state to the user. It looks like we have a SRP violation! But, now that we've determined we have a violation, why should we care?
 
 Including two separate responsibilities in one class, puts us in danger of
 coupling pieces of functionality that have no reason to be dependent on one another. In the our ```Board```, we are coupling the ideas of a ```Board```'s state with its display. If we ever want to change how a board's **state is stored** or how a board is **displayed**, we would be dealing with two very different responsibilities.  Say our requirements change, and now instead of displaying our game in the terminal, we also want to display it in a browser as well. While creating a browser UI, there could be a chance that introduce a bug into the state keeping section of our class. 
 
-Let's dig back into our Tic Tac Toe example. As we discovered, it is quite possible that our Tic Tac Toe game evolves in such a way that we decide to extend our program to allow the user to play in a browser in addition to our initial display in the terminal.  How could we accomplish this? Our first option could be to use the same ```Board``` class that we defined above, and to add the new functionality to it:
+Let's dig back into our Tic Tac Toe example.  How could we accomplish the display of the board in a browser? Our first option could be to use the same ```Board``` class that we defined above, and to add the new functionality to it:
 
 ```
 class Board
